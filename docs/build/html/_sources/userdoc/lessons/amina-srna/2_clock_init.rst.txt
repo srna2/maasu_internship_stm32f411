@@ -1,0 +1,104 @@
+Clock Initialization
+====================
+
+Introduction
+------------
+
+Clock initialization is a crucial step in the setup of microcontrollers like the STM32F411. 
+It configures the clock sources and frequencies that drive the microcontroller's operation, ensuring precise timing and synchronization for various peripherals and core functionalities. 
+
+Why is Clock Initialization Important?
+--------------------------------------
+
+Proper clock configuration is essential for several reasons:
+
+- **Precision**: An external clock source (HSE) is often more accurate than an internal one (HSI), providing stable and precise timing.
+- **Performance**: Correct clock setup ensures that the microcontroller operates at its optimal performance, allowing peripherals and the core to function correctly and efficiently.
+- **Frequency Range**: Using an external clock can enable a higher frequency range, which is beneficial for high-speed applications.
+
+This is the code for clock initialization:
+
+void clock_init(){
+
+    RCC->CR |= RCC_CR_HSEBYP;
+    RCC->CR |= RCC_CR_HSEON;
+
+    while(!(RCC->CR & RCC_CR_HSERDY));
+    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+
+    PWR->CR &= ~PWR_CR_VOS;
+    PWR->CR |= PWR_CR_VOS;
+
+    FLASH->ACR |= FLASH_ACR_LATENCY_3WS;
+    RCC->PLLCFGR &= ~(RCC_PLLCFGR_PLLM | RCC_PLLCFGR_PLLN | RCC_PLLCFGR_PLLP);
+    RCC->PLLCFGR |= ((4 << RCC_PLLCFGR_PLLM_Pos) | (200 << RCC_PLLCFGR_PLLN_Pos) | (1 << RCC_PLLCFGR_PLLP_Pos)) | RCC_PLLCFGR_PLLSRC_HSE;
+    RCC->CFGR &= ~RCC_CFGR_PPRE1;
+    RCC->CFGR |= RCC_CFGR_PPRE1_DIV2;
+
+    RCC->CR |= RCC_CR_PLLON;
+    while(!(RCC->CR & RCC_CR_PLLRDY));
+
+    RCC->CFGR |= (RCC_CFGR_SW_PLL << RCC_CFGR_SW_Pos);
+    while (!(RCC->CFGR & RCC_CFGR_SWS_PLL));
+
+    SystemCoreClockUpdate();
+
+}
+
+
+Explanation of abbrevations (used in the code):
+-----------------------------------------------
+
+
+Enabling the External Clock Source:
+
+RCC_CR_HSEBYP: 
+High-Speed External (HSE) oscillator bypass -- When set, it bypasses the oscillator with an external clock.
+RCC_CR_HSEON: 
+High-Speed External (HSE) oscillator enable -- When set, it turns on the HSE oscillator.
+RCC_CR_HSERDY:
+High-Speed External (HSE) oscillator ready flag -- When set, it indicates that the HSE oscillator is stable and ready to be used.
+
+Power Controller Configuration:
+
+RCC_APB1ENR_PWREN:
+ Power interface clock enable -- When set, it enables the clock for the power controller.
+
+Voltage Scaling:
+
+PWR_CR_VOS:
+Voltage scaling selection -- When set to 1, it selects scale 1, which is used for maximum performance.
+
+Flash Memory Configuration:
+
+FLASH_ACR_LATENCY_3WS:
+Flash memory latency setting -- When set, it configures the flash memory access time to 3 wait states.
+
+PLL (Phase-Locked Loop) Configuration:
+
+RCC_PLLCFGR_PLLM: -- PLL division factor for the main PLL input clock.
+RCC_PLLCFGR_PLLN: -- PLL multiplication factor for the main PLL.
+RCC_PLLCFGR_PLLP: -- PLL division factor for the main system clock.
+
+APB1 Prescaler Configuration:
+
+RCC_CFGR_PPRE1: -- APB1 low-speed prescaler. Configures the division factor of the APB1 clock.
+
+RCC_CFGR_PPRE1_DIV2: -- APB1 prescaler value to divide by 2.
+
+Enabling the PLL:
+
+RCC_CFGR_SW_PLL: -- System clock switch. Selects the PLL as the system clock source.
+
+Switching the System Clock:
+
+RCC_CFGR_SWS_PLL: -- System clock switch status. Indicates that the PLL is used as the system clock.
+
+Updating SystemCoreClock:
+
+SystemCoreClockUpdate(): This function updates the SystemCoreClock variable, which holds the core clock frequency. 
+This is necessary to keep track of the current system clock frequency after configuration changes.
+
+
+Effective clock initialization maximizes the microcontroller's performance, ensures stable operation, and aligns the system's functionality with the design requirements. Properly configured clocks enable efficient operation of both the core and peripheral components, leading to reliable and optimized system performance.
+

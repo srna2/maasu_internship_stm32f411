@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.2.3. USART (Universal Synchronous/Asynchronous Receiver/Transmitter) &mdash; Maasu Internship 3 - STM32 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/assets/jsonview.bundle.css?v=f6ef2277" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common.css?v=bd9ab754" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/styles.css?v=6c8eb985" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=ffa536d2" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/layouts.css?v=448c382f" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/assets/jsonview.bundle.js?v=18cd53c5"></script>
+        <script src="../../../_static/assets/jsonview_loader.js?v=f7ff7e7d"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=f783d6a5"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="4.3. Lessons" href="../benjamin-hrustemovic/lessons.html" />
+    <link rel="prev" title="4.2.2. Clock Initialization" href="2_clock_init.html" />
+<link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Maasu Internship 3 - STM32
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../project/project.html">2. Project Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fundamentals.html">3. Fundamentals</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lessons.html">4. Lessons Learned by Interns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../almir-mujanovic/lessons.html">4.1. Lessons</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="lessons.html">4.2. Lessons by Amina</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_gpio_firmware.html">4.2.1. 3. Defining Initial Code for GPIO Firmware</a></li>
+<li class="toctree-l3"><a class="reference internal" href="2_clock_init.html">4.2.2. Clock Initialization</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.3. USART (Universal Synchronous/Asynchronous Receiver/Transmitter)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#key-features-of-usart-in-stm32f411">4.2.3.1. Key Features of USART in STM32F411</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usart-implementation">4.2.3.2. Usart Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#purpose-of-oversampling">4.2.3.3. Purpose of Oversampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#baud-rate">4.2.3.4. Baud Rate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-oversampling-and-baud-rate-work-together">4.2.3.5. How Oversampling and Baud Rate Work Together</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#formula">4.2.3.6. Formula</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#main-cpp">4.2.3.7. Main CPP</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#syscalls-cpp">4.2.3.8. syscalls.cpp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#makefile-update">4.2.3.9. Makefile Update</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#summary-of-execution-steps">4.2.4. Summary of Execution Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../benjamin-hrustemovic/lessons.html">4.3. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faris-saracevic/lessons.html">4.4. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lamija-veladzic/lessons.html">4.5. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minel-salihagic/lessons.html">4.6. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../muhamed-zukic/lessons.html">4.7. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nejra-adilovic/lessons.html">4.8. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rijad-ozegovic/lessons.html">4.9. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sahim-mevkic/lessons.html">4.10. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selma-imsirovic/lessons.html">4.11. Lessons</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment_setup/environment_setup.html">5. Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements/requirements.html">6. Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/architecture.html">7. Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../implementation/implementation.html">8. Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing/testing.html">9. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs/faqs.html">10. Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary/glossary.html">11. Glossary</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Maasu Internship 3 - STM32</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../lessons.html"><span class="section-number">4. </span>Lessons Learned by Interns</a></li>
+          <li class="breadcrumb-item"><a href="lessons.html"><span class="section-number">4.2. </span>Lessons by Amina</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.3. </span>USART (Universal Synchronous/Asynchronous Receiver/Transmitter)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/userdoc/lessons/amina-srna/3_usart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usart-universal-synchronous-asynchronous-receiver-transmitter">
+<h1><span class="section-number">4.2.3. </span>USART (Universal Synchronous/Asynchronous Receiver/Transmitter)<a class="headerlink" href="#usart-universal-synchronous-asynchronous-receiver-transmitter" title="Link to this heading"></a></h1>
+<p>USART (Universal Synchronous/Asynchronous Receiver/Transmitter) is a serial communication protocol used in embedded systems, including microcontrollers like the STM32F411. It provides a means for data exchange between the microcontroller and other devices, such as computers, sensors, and other microcontrollers, either synchronously or asynchronously.</p>
+<section id="key-features-of-usart-in-stm32f411">
+<h2><span class="section-number">4.2.3.1. </span>Key Features of USART in STM32F411<a class="headerlink" href="#key-features-of-usart-in-stm32f411" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Modes of Operation:</strong>
+- <strong>Asynchronous Mode:</strong> The transmitter and receiver do not share a common clock signal. Instead, the data is transmitted along with start and stop bits to ensure proper timing.
+- <strong>Synchronous Mode:</strong> Both the transmitter and receiver share a common clock signal, enabling faster data transfer rates and more precise timing control.</p></li>
+<li><p><strong>Baud Rate:</strong>
+- The baud rate defines the speed of communication. It is configurable, allowing you to set the desired speed of data transfer.</p></li>
+<li><p><strong>Data Bits, Parity, and Stop Bits:</strong>
+- You can configure the number of data bits (usually 8 or 9), the parity bit (none, even, or odd), and the number of stop bits (1 or 2). This flexibility allows you to tailor the communication settings to match those of the device you are communicating with.</p></li>
+<li><p><strong>Oversampling:</strong>
+- Oversampling allows for more accurate data sampling by using higher clock rates to sample the incoming data multiple times per bit period. STM32F411 supports both 8x and 16x oversampling.
+- Oversampling helps ensure that the data transmitted and received via USART is accurate and reliable, especially in environments where the signal might be noisy or unstable. It is a crucial feature for high-quality serial communication.</p></li>
+<li><p><strong>Interrupts and DMA:</strong>
+- USART can generate interrupts on various events, such as data received or transmission complete. It can also be configured to work with Direct Memory Access (DMA) to handle data transfers without CPU intervention, improving efficiency.</p></li>
+<li><p><strong>Hardware Flow Control:</strong>
+- USART can use hardware flow control (RTS/CTS) to manage data flow and prevent buffer overflow.</p></li>
+</ul>
+</section>
+<section id="usart-implementation">
+<h2><span class="section-number">4.2.3.2. </span>Usart Implementation<a class="headerlink" href="#usart-implementation" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Makefile Update</strong></p>
+<p>Added the following to the <cite>Makefile</cite> because separate files for USART (<cite>usart.cpp</cite>, <cite>usart.h</cite>) were created:</p>
+<div class="highlight-makefile notranslate"><div class="highlight"><pre><span></span><span class="nf">usart.o</span><span class="o">:</span><span class="w"> </span><span class="n">usart</span>.<span class="n">cpp</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span>usart.cpp<span class="w"> </span>-c
+</pre></div>
+</div>
+</li>
+<li><p><strong>Header File (`usart.h`)</strong></p>
+<p>Created <cite>usart.h</cite>, defining a class <cite>Usart</cite> with a private member <cite>usart</cite> (a pointer to <cite>USART_TypeDef</cite>) and public methods for initialization and data transmission.</p>
+</li>
+<li><p><strong>Source File (`usart.cpp`)</strong></p>
+<p>Implemented the methods in <cite>usart.cpp</cite>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Usart</span><span class="o">::</span><span class="n">Usart</span><span class="p">(</span><span class="n">USART_TypeDef</span><span class="o">*</span><span class="w"> </span><span class="n">usart</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">usart</span><span class="p">(</span><span class="n">usart</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">usart</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">USART1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">RCC</span><span class="o">-&gt;</span><span class="n">APB2ENR</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">RCC_APB2ENR_USART1EN</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">usart</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">USART2</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">RCC</span><span class="o">-&gt;</span><span class="n">APB1ENR</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">RCC_APB1ENR_USART2EN</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">usart</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">USART6</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">RCC</span><span class="o">-&gt;</span><span class="n">APB2ENR</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">RCC_APB2ENR_USART6EN</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="purpose-of-oversampling">
+<h2><span class="section-number">4.2.3.3. </span>Purpose of Oversampling<a class="headerlink" href="#purpose-of-oversampling" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Improved Noise Immunity:</strong> By sampling each bit multiple times, the USART can better determine the correct value of the bit, even in the presence of noise or other signal distortions.</p></li>
+<li><p><strong>Clock Synchronization:</strong> Helps in synchronizing the receiver’s clock with the transmitter’s clock, ensuring accurate data reception.</p></li>
+</ul>
+</section>
+<section id="baud-rate">
+<h2><span class="section-number">4.2.3.4. </span>Baud Rate<a class="headerlink" href="#baud-rate" title="Link to this heading"></a></h2>
+<p>Baud rate represents the number of signal changes or symbols sent per second. In the context of USART, the baud rate typically refers to the number of bits transmitted per second (bps).</p>
+</section>
+<section id="how-oversampling-and-baud-rate-work-together">
+<h2><span class="section-number">4.2.3.5. </span>How Oversampling and Baud Rate Work Together<a class="headerlink" href="#how-oversampling-and-baud-rate-work-together" title="Link to this heading"></a></h2>
+<p>The baud rate determines how fast data is transmitted, while the oversampling rate determines how often each bit is sampled to ensure accurate data reception.</p>
+<dl class="simple">
+<dt>For example:</dt><dd><p>At 9600 bps with 16x oversampling, each bit is sampled 16 times, leading to a total of 153600 samples per second.</p>
+</dd>
+</dl>
+</section>
+<section id="formula">
+<h2><span class="section-number">4.2.3.6. </span>Formula<a class="headerlink" href="#formula" title="Link to this heading"></a></h2>
+<p>The formula to calculate the BRR value for the USART is:</p>
+<div class="math notranslate nohighlight">
+\[\text{USARTDIV} = \frac{\text{SystemCoreClock}}{\text{baud\_rate} \times \text{oversampling\_rate}}\]</div>
+<ul>
+<li><p><strong>SystemCoreClock:</strong> The frequency of the system clock.</p></li>
+<li><p><strong>baud_rate:</strong> The desired baud rate.</p></li>
+<li><p><strong>oversampling_rate:</strong> The oversampling rate, either 8 or 16.</p>
+<blockquote>
+<div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Usart::init</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">baud_rate</span><span class="p">,</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">oversampling</span><span class="p">){</span>
+<span class="w">    </span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">CR1</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="n">USART_CR1_OVER8</span><span class="p">;</span>
+<span class="w">    </span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">CR1</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">oversampling</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">USART_CR1_OVER8</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">usartdiv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">SystemCoreClock</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">baud_rate</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">oversampling</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">16</span><span class="p">)))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">;</span>
+<span class="w">    </span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">BRR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">usartdiv</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">CR1</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">USART_CR1_UE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">USART_CR1_TE</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">USART_CR1_RE</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><cite>Usart::init</cite> configures the USART with the specified baud rate and oversampling. It disables oversampling by 8 if necessary, calculates the baud rate register value, and enables the USART along with transmitter and receiver.</p>
+<p>Next:</p>
+<blockquote>
+<div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Usart::write_byte</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">byte</span><span class="p">){</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">SR</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">USART_SR_TXE</span><span class="p">));</span>
+<span class="w">    </span><span class="n">usart</span><span class="o">-&gt;</span><span class="n">DR</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">byte</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This loop continuously checks the TXE flag. It will keep looping (doing nothing) until the TXE flag is set, indicating that the data register is ready for new data.</p>
+<ul class="simple">
+<li><p><strong>`USART_SR_TXE:`</strong> This is a bitmask for the Transmit Data Register Empty (TXE) flag in the SR register.</p></li>
+</ul>
+<p>The function uses a for loop to iterate through each byte in the buffer.</p>
+<blockquote>
+<div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">Usart::write_buf</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">){</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">write_byte</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="main-cpp">
+<h2><span class="section-number">4.2.3.7. </span>Main CPP<a class="headerlink" href="#main-cpp" title="Link to this heading"></a></h2>
+<p>Next I initialized a Usart instance for USART2, and in the usart_init() function I used PIN 2 and PIN 3 for USART2. I set them for alternate mode with set_alt_func(2) and after assigned them to the USART2 peripheral with set_alt_func(7).
+Also I set up a baud rate of 115200 and an oversampling rate of 16, enabling communication through this serial interface.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a Usart instance for USART2</span>
+<span class="n">Usart</span><span class="w"> </span><span class="nf">usart2</span><span class="p">(</span><span class="n">USART2</span><span class="p">);</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">usart_init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Gpio</span><span class="w"> </span><span class="n">pa2</span><span class="p">(</span><span class="n">GPIOA</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pa2</span><span class="p">.</span><span class="n">set_mode</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pa2</span><span class="p">.</span><span class="n">set_alt_func</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">Gpio</span><span class="w"> </span><span class="n">pa3</span><span class="p">(</span><span class="n">GPIOA</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pa3</span><span class="p">.</span><span class="n">set_mode</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">    </span><span class="n">pa3</span><span class="p">.</span><span class="n">set_alt_func</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">usart2</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="mi">115200</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">);</span><span class="w"> </span><span class="c1">// Initialize USART2</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After this, in the main function, <cite>int main()</cite>, I added this code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// Initialize USART</span>
+<span class="n">usart_init</span><span class="p">();</span>
+
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// turn on output signal</span>
+<span class="w">    </span><span class="n">myGpio</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">myGpio</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">delay_ms</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;abc</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">);</span><span class="w">  </span><span class="c1">// Sends the data, string &quot;abc&quot;, \r puts cursor on the beginning</span>
+<span class="w">    </span><span class="n">delay_ms</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><cite>usart_init()</cite> sets up USART2 by configuring the GPIO pins and initializing the USART peripheral. This enables serial communication.</p></li>
+<li><p><cite>myGpio.write(1);</cite> turns on the GPIO pin, and <cite>delay_ms(1000);</cite> waits for 1 second. Then <cite>myGpio.write(0);</cite> turns off the GPIO pin, and <cite>delay_ms(1000);</cite> waits another second. This creates a 1-second on/off blinking pattern.</p></li>
+<li><p><cite>printf(“abcrn”);</cite> sends the string “abc” followed by a carriage return (<cite>r</cite>) and a newline (<cite>n</cite>) through USART.</p></li>
+</ul>
+</section>
+<section id="syscalls-cpp">
+<h2><span class="section-number">4.2.3.8. </span>syscalls.cpp<a class="headerlink" href="#syscalls-cpp" title="Link to this heading"></a></h2>
+<p>Implemented <cite>syscalls.cpp</cite>, and added this file into the project folder. For USART, I included the following code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">Usart</span><span class="w"> </span><span class="nf">usart</span><span class="p">(</span><span class="n">USART2</span><span class="p">);</span>
+
+<span class="k">extern</span><span class="w"> </span><span class="s">&quot;C&quot;</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">_write</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">file</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">len</span><span class="p">){</span>
+<span class="w">    </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="n">file</span><span class="p">;</span>
+<span class="w">    </span><span class="n">usart</span><span class="p">.</span><span class="n">write_buf</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="w"> </span><span class="n">len</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Created an instance of the <cite>Usart</cite> class.</p></li>
+<li><p>The function <cite>extern “C” int _write(int file, char *ptr, int len)</cite> is an override of the standard <cite>_write</cite> function, used by functions like <cite>printf</cite> to send data to a file or output stream.</p></li>
+<li><p>Ignoring <cite>file</cite> Parameter: <cite>(void) file;</cite> indicates that the <cite>file</cite> parameter is not used in this function. This suppresses compiler warnings about unused parameters.</p></li>
+<li><p><cite>usart.write_buf(ptr, len);</cite> calls the <cite>write_buf</cite> method of the <cite>usart</cite> instance to send the data pointed to by <cite>ptr</cite> with the length <cite>len</cite> over USART2. This is how the data gets transmitted through the USART hardware.</p></li>
+<li><p>Returning Length: <cite>return len;</cite> returns the number of bytes written, which is the same as the length of the data to indicate successful transmission.</p></li>
+</ul>
+</section>
+<section id="makefile-update">
+<h2><span class="section-number">4.2.3.9. </span>Makefile Update<a class="headerlink" href="#makefile-update" title="Link to this heading"></a></h2>
+<p>Included <cite>syscalls.cpp</cite> in the <cite>Makefile</cite> with these lines:</p>
+<div class="highlight-makefile notranslate"><div class="highlight"><pre><span></span><span class="nf">$(BINARY)</span><span class="o">:</span><span class="w"> </span><span class="n">main</span>.<span class="n">o</span> <span class="n">gpio</span>.<span class="n">o</span> <span class="n">usart</span>.<span class="n">o</span> <span class="n">syscalls</span>.<span class="n">o</span> <span class="n">startup</span>.<span class="n">o</span> <span class="n">system_stm</span>32<span class="n">f</span>4<span class="n">xx</span>.<span class="n">o</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>LDFLAGS<span class="k">)</span><span class="w"> </span>$^<span class="w"> </span>-o<span class="w"> </span><span class="k">$(</span>BINARY<span class="k">)</span>
+
+<span class="nf">syscalls.o</span><span class="o">:</span><span class="w"> </span><span class="n">syscalls</span>.<span class="n">cpp</span>
+<span class="w">    </span><span class="k">$(</span>CC<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CFLAGS<span class="k">)</span><span class="w"> </span><span class="k">$(</span>CPPFLAGS<span class="k">)</span><span class="w"> </span>syscalls.cpp<span class="w"> </span>-c
+</pre></div>
+</div>
+</section>
+</section>
+<section id="summary-of-execution-steps">
+<h1><span class="section-number">4.2.4. </span>Summary of Execution Steps<a class="headerlink" href="#summary-of-execution-steps" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p><strong>Initialize USART:</strong>
+- Created a <cite>Usart</cite> instance for <cite>USART2</cite>.
+- Configured GPIO pins PA2 and PA3 for USART2 communication.
+- Set the baud rate to 115200 and oversampling to 16.</p></li>
+<li><p><strong>Main Loop:</strong>
+- Toggles a GPIO pin on and off every second.
+- Uses <cite>printf</cite> to send the string “abc” through USART2.</p></li>
+<li><p><strong>Redirect `printf`:</strong>
+- Implemented <cite>_write</cite> function to route <cite>printf</cite> output to USART2.</p></li>
+<li><p><strong>Update Makefile:</strong>
+- Added rules for compiling <cite>syscalls.cpp</cite> and linking it with the project.</p></li>
+</ol>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_clock_init.html" class="btn btn-neutral float-left" title="4.2.2. Clock Initialization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../benjamin-hrustemovic/lessons.html" class="btn btn-neutral float-right" title="4.3. Lessons" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Maasu BH d.o.o..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

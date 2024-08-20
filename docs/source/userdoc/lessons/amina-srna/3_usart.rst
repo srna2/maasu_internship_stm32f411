@@ -1,0 +1,233 @@
+=============================================================================
+USART (Universal Synchronous/Asynchronous Receiver/Transmitter) by Amina Srna
+=============================================================================
+
+USART (Universal Synchronous/Asynchronous Receiver/Transmitter) is a serial communication protocol used in embedded systems, including microcontrollers like the STM32F411. It provides a means for data exchange between the microcontroller and other devices, such as computers, sensors, and other microcontrollers, either synchronously or asynchronously.
+
+Key Features of USART in STM32F411
+----------------------------------
+
+- **Modes of Operation:**
+  - **Asynchronous Mode:** The transmitter and receiver do not share a common clock signal. Instead, the data is transmitted along with start and stop bits to ensure proper timing.
+  - **Synchronous Mode:** Both the transmitter and receiver share a common clock signal, enabling faster data transfer rates and more precise timing control.
+
+- **Baud Rate:**
+  - The baud rate defines the speed of communication. It is configurable, allowing you to set the desired speed of data transfer.
+
+- **Data Bits, Parity, and Stop Bits:**
+  - You can configure the number of data bits (usually 8 or 9), the parity bit (none, even, or odd), and the number of stop bits (1 or 2). This flexibility allows you to tailor the communication settings to match those of the device you are communicating with.
+
+- **Oversampling:**
+  - Oversampling allows for more accurate data sampling by using higher clock rates to sample the incoming data multiple times per bit period. STM32F411 supports both 8x and 16x oversampling.
+  - Oversampling helps ensure that the data transmitted and received via USART is accurate and reliable, especially in environments where the signal might be noisy or unstable. It is a crucial feature for high-quality serial communication.
+
+- **Interrupts and DMA:**
+  - USART can generate interrupts on various events, such as data received or transmission complete. It can also be configured to work with Direct Memory Access (DMA) to handle data transfers without CPU intervention, improving efficiency.
+
+- **Hardware Flow Control:**
+  - USART can use hardware flow control (RTS/CTS) to manage data flow and prevent buffer overflow.
+
+Usart Implementation
+--------------------
+
+1. **Makefile Update**
+
+   Added the following to the `Makefile` because separate files for USART (`usart.cpp`, `usart.h`) were created:
+
+   .. code-block:: makefile
+
+       usart.o: usart.cpp
+           $(CC) $(CFLAGS) $(CPPFLAGS) usart.cpp -c
+
+2. **Header File (`usart.h`)**
+
+   Created `usart.h`, defining a class `Usart` with a private member `usart` (a pointer to `USART_TypeDef`) and public methods for initialization and data transmission.
+
+3. **Source File (`usart.cpp`)**
+
+   Implemented the methods in `usart.cpp`:
+
+   .. code-block:: cpp
+
+       Usart::Usart(USART_TypeDef* usart) : usart(usart) {
+           if (usart == USART1) {
+               RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+           } else if (usart == USART2) {
+               RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+           } else if (usart == USART6) {
+               RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
+           }
+       }
+
+Purpose of Oversampling
+-----------------------
+
+- **Improved Noise Immunity:** By sampling each bit multiple times, the USART can better determine the correct value of the bit, even in the presence of noise or other signal distortions.
+- **Clock Synchronization:** Helps in synchronizing the receiver's clock with the transmitter's clock, ensuring accurate data reception.
+
+Baud Rate
+---------
+
+Baud rate represents the number of signal changes or symbols sent per second. In the context of USART, the baud rate typically refers to the number of bits transmitted per second (bps).
+
+How Oversampling and Baud Rate Work Together
+--------------------------------------------
+
+The baud rate determines how fast data is transmitted, while the oversampling rate determines how often each bit is sampled to ensure accurate data reception.
+
+For example:
+    At 9600 bps with 16x oversampling, each bit is sampled 16 times, leading to a total of 153600 samples per second.
+
+Formula
+-------
+
+The formula to calculate the BRR value for the USART is:
+
+.. math::
+
+   \text{USARTDIV} = \frac{\text{SystemCoreClock}}{\text{baud\_rate} \times \text{oversampling\_rate}}
+
+- **SystemCoreClock:** The frequency of the system clock.
+- **baud_rate:** The desired baud rate.
+- **oversampling_rate:** The oversampling rate, either 8 or 16.
+
+   .. code-block:: cpp
+
+       void Usart::init(uint32_t baud_rate, uint32_t oversampling){
+           usart->CR1 &= ~USART_CR1_OVER8;
+           usart->CR1 |= oversampling == 8 ? USART_CR1_OVER8 : 0;
+
+           uint32_t usartdiv = (SystemCoreClock / (baud_rate * (oversampling == 8 ? 8 : 16))) + 0.5;
+           usart->BRR = usartdiv;
+
+           usart->CR1 |= USART_CR1_UE | USART_CR1_TE | USART_CR1_RE;
+       }
+
+`Usart::init` configures the USART with the specified baud rate and oversampling. It disables oversampling by 8 if necessary, calculates the baud rate register value, and enables the USART along with transmitter and receiver.
+
+Next:
+
+   .. code-block:: cpp
+
+       void Usart::write_byte(const char byte){
+           while (!(usart->SR & USART_SR_TXE));
+           usart->DR = byte;
+       }
+
+This loop continuously checks the TXE flag. It will keep looping (doing nothing) until the TXE flag is set, indicating that the data register is ready for new data.
+
+- **`USART_SR_TXE:`** This is a bitmask for the Transmit Data Register Empty (TXE) flag in the SR register.
+
+The function uses a for loop to iterate through each byte in the buffer.
+
+   .. code-block:: cpp
+
+       void Usart::write_buf(const char* buf, const int len){
+           for (int i = 0; i < len; i++) {
+               write_byte(buf[i]);
+           }
+       }
+
+Main CPP
+--------
+
+Next I initialized a Usart instance for USART2, and in the usart_init() function I used PIN 2 and PIN 3 for USART2. I set them for alternate mode with set_alt_func(2) and after assigned them to the USART2 peripheral with set_alt_func(7).
+Also I set up a baud rate of 115200 and an oversampling rate of 16, enabling communication through this serial interface.
+
+.. code-block:: cpp
+
+    // Create a Usart instance for USART2
+    Usart usart2(USART2);
+
+    void usart_init() {
+        Gpio pa2(GPIOA, 2);
+        pa2.set_mode(2);
+        pa2.set_alt_func(7);
+
+        Gpio pa3(GPIOA, 3);
+        pa3.set_mode(2);
+        pa3.set_alt_func(7);
+
+        usart2.init(115200, 16); // Initialize USART2
+    }
+
+After this, in the main function, `int main()`, I added this code:
+
+.. code-block:: cpp
+
+    // Initialize USART
+    usart_init();
+
+    while (1) {
+        // turn on output signal
+        myGpio.write(1);
+        delay_ms(1000);
+        myGpio.write(0);
+        delay_ms(1000);
+
+        printf("abc\r\n");  // Sends the data, string "abc", \r puts cursor on the beginning
+        delay_ms(500); 
+    }
+
+- `usart_init()` sets up USART2 by configuring the GPIO pins and initializing the USART peripheral. This enables serial communication.
+
+- `myGpio.write(1);` turns on the GPIO pin, and `delay_ms(1000);` waits for 1 second. Then `myGpio.write(0);` turns off the GPIO pin, and `delay_ms(1000);` waits another second. This creates a 1-second on/off blinking pattern.
+
+- `printf("abc\r\n");` sends the string "abc" followed by a carriage return (`\r`) and a newline (`\n`) through USART.
+
+syscalls.cpp
+------------
+
+Implemented `syscalls.cpp`, and added this file into the project folder. For USART, I included the following code:
+
+.. code-block:: cpp
+
+    Usart usart(USART2);
+
+    extern "C" int _write(int file, char *ptr, int len){
+        (void) file;
+        usart.write_buf(ptr, len);
+        return len;
+    }
+
+- Created an instance of the `Usart` class.
+
+- The function `extern "C" int _write(int file, char *ptr, int len)` is an override of the standard `_write` function, used by functions like `printf` to send data to a file or output stream
+
+- Ignoring `file` Parameter: `(void) file;` indicates that the `file` parameter is not used in this function. This suppresses compiler warnings about unused parameters.
+
+- `usart.write_buf(ptr, len);` calls the `write_buf` method of the `usart` instance to send the data pointed to by `ptr` with the length `len` over USART2. This is how the data gets transmitted through the USART hardware.
+
+- Returning Length: `return len;` returns the number of bytes written, which is the same as the length of the data to indicate successful transmission.
+
+Makefile Update
+---------------
+
+Included `syscalls.cpp` in the `Makefile` with these lines:
+
+.. code-block:: makefile
+
+    $(BINARY): main.o gpio.o usart.o syscalls.o startup.o system_stm32f4xx.o
+        $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $^ -o $(BINARY)
+
+    syscalls.o: syscalls.cpp
+        $(CC) $(CFLAGS) $(CPPFLAGS) syscalls.cpp -c
+
+
+Summary of Execution Steps
+==========================
+
+1. **Initialize USART:**
+   - Created a `Usart` instance for `USART2`.
+   - Configured GPIO pins PA2 and PA3 for USART2 communication.
+   - Set the baud rate to 115200 and oversampling to 16.
+
+2. **Main Loop:**
+   - Toggles a GPIO pin on and off every second.
+   - Uses `printf` to send the string "abc" through USART2.
+
+3. **Redirect `printf`:**
+   - Implemented `_write` function to route `printf` output to USART2.
+
+4. **Update Makefile:**
+   - Added rules for compiling `syscalls.cpp` and linking it with the project.

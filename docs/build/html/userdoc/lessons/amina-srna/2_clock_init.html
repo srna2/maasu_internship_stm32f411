@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.2.2. Clock Initialization &mdash; Maasu Internship 3 - STM32 1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/assets/jsonview.bundle.css?v=f6ef2277" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common.css?v=bd9ab754" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/styles.css?v=6c8eb985" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=ffa536d2" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/layouts.css?v=448c382f" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=29a6c3e3"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/assets/jsonview.bundle.js?v=18cd53c5"></script>
+        <script src="../../../_static/assets/jsonview_loader.js?v=f7ff7e7d"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+        <script src="../../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=f783d6a5"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="4.2.3. USART (Universal Synchronous/Asynchronous Receiver/Transmitter)" href="3_usart.html" />
+    <link rel="prev" title="4.2.1. 3. Defining Initial Code for GPIO Firmware" href="1_gpio_firmware.html" />
+<link href="../../../_static/style.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Maasu Internship 3 - STM32
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../project/project.html">2. Project Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fundamentals/fundamentals.html">3. Fundamentals</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lessons.html">4. Lessons Learned by Interns</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../almir-mujanovic/lessons.html">4.1. Lessons</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="lessons.html">4.2. Lessons by Amina</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="1_gpio_firmware.html">4.2.1. 3. Defining Initial Code for GPIO Firmware</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.2.2. Clock Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">4.2.2.1. Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#why-is-clock-initialization-important">4.2.2.2. Why is Clock Initialization Important?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#explanation-of-abbrevations-used-in-the-code">4.2.2.3. Explanation of abbrevations (used in the code):</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="3_usart.html">4.2.3. USART (Universal Synchronous/Asynchronous Receiver/Transmitter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="3_usart.html#summary-of-execution-steps">4.2.4. Summary of Execution Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../benjamin-hrustemovic/lessons.html">4.3. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../faris-saracevic/lessons.html">4.4. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lamija-veladzic/lessons.html">4.5. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minel-salihagic/lessons.html">4.6. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../muhamed-zukic/lessons.html">4.7. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nejra-adilovic/lessons.html">4.8. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rijad-ozegovic/lessons.html">4.9. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sahim-mevkic/lessons.html">4.10. Lessons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../selma-imsirovic/lessons.html">4.11. Lessons</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment_setup/environment_setup.html">5. Development Environment Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements/requirements.html">6. Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../architecture/architecture.html">7. Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../implementation/implementation.html">8. Implementation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing/testing.html">9. Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs/faqs.html">10. Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../glossary/glossary.html">11. Glossary</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Maasu Internship 3 - STM32</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../lessons.html"><span class="section-number">4. </span>Lessons Learned by Interns</a></li>
+          <li class="breadcrumb-item"><a href="lessons.html"><span class="section-number">4.2. </span>Lessons by Amina</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.2.2. </span>Clock Initialization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/userdoc/lessons/amina-srna/2_clock_init.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="clock-initialization">
+<h1><span class="section-number">4.2.2. </span>Clock Initialization<a class="headerlink" href="#clock-initialization" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2><span class="section-number">4.2.2.1. </span>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Clock initialization is a crucial step in the setup of microcontrollers like the STM32F411.
+It configures the clock sources and frequencies that drive the microcontroller’s operation, ensuring precise timing and synchronization for various peripherals and core functionalities.</p>
+</section>
+<section id="why-is-clock-initialization-important">
+<h2><span class="section-number">4.2.2.2. </span>Why is Clock Initialization Important?<a class="headerlink" href="#why-is-clock-initialization-important" title="Link to this heading"></a></h2>
+<p>Proper clock configuration is essential for several reasons:</p>
+<ul class="simple">
+<li><p><strong>Precision</strong>: An external clock source (HSE) is often more accurate than an internal one (HSI), providing stable and precise timing.</p></li>
+<li><p><strong>Performance</strong>: Correct clock setup ensures that the microcontroller operates at its optimal performance, allowing peripherals and the core to function correctly and efficiently.</p></li>
+<li><p><strong>Frequency Range</strong>: Using an external clock can enable a higher frequency range, which is beneficial for high-speed applications.</p></li>
+</ul>
+<p>This is the code for clock initialization:</p>
+<p>void clock_init(){</p>
+<blockquote>
+<div><p>RCC-&gt;CR <a href="#id1"><span class="problematic" id="id2">|</span></a>= RCC_CR_HSEBYP;
+RCC-&gt;CR <a href="#id3"><span class="problematic" id="id4">|</span></a>= RCC_CR_HSEON;</p>
+<p>while(!(RCC-&gt;CR &amp; RCC_CR_HSERDY));
+RCC-&gt;APB1ENR <a href="#id5"><span class="problematic" id="id6">|</span></a>= RCC_APB1ENR_PWREN;</p>
+<p>PWR-&gt;CR &amp;= ~PWR_CR_VOS;
+PWR-&gt;CR <a href="#id7"><span class="problematic" id="id8">|</span></a>= PWR_CR_VOS;</p>
+<p>FLASH-&gt;ACR <a href="#id9"><span class="problematic" id="id10">|</span></a>= FLASH_ACR_LATENCY_3WS;
+RCC-&gt;PLLCFGR &amp;= ~(RCC_PLLCFGR_PLLM | RCC_PLLCFGR_PLLN | RCC_PLLCFGR_PLLP);
+RCC-&gt;PLLCFGR <a href="#id11"><span class="problematic" id="id12">|</span></a>= ((4 &lt;&lt; RCC_PLLCFGR_PLLM_Pos) | (200 &lt;&lt; RCC_PLLCFGR_PLLN_Pos) | (1 &lt;&lt; RCC_PLLCFGR_PLLP_Pos)) | RCC_PLLCFGR_PLLSRC_HSE;
+RCC-&gt;CFGR &amp;= ~RCC_CFGR_PPRE1;
+RCC-&gt;CFGR <a href="#id13"><span class="problematic" id="id14">|</span></a>= RCC_CFGR_PPRE1_DIV2;</p>
+<p>RCC-&gt;CR <a href="#id15"><span class="problematic" id="id16">|</span></a>= RCC_CR_PLLON;
+while(!(RCC-&gt;CR &amp; RCC_CR_PLLRDY));</p>
+<p>RCC-&gt;CFGR <a href="#id17"><span class="problematic" id="id18">|</span></a>= (RCC_CFGR_SW_PLL &lt;&lt; RCC_CFGR_SW_Pos);
+while (!(RCC-&gt;CFGR &amp; RCC_CFGR_SWS_PLL));</p>
+<p>SystemCoreClockUpdate();</p>
+</div></blockquote>
+<p>}</p>
+</section>
+<section id="explanation-of-abbrevations-used-in-the-code">
+<h2><span class="section-number">4.2.2.3. </span>Explanation of abbrevations (used in the code):<a class="headerlink" href="#explanation-of-abbrevations-used-in-the-code" title="Link to this heading"></a></h2>
+<p>Enabling the External Clock Source:</p>
+<p>RCC_CR_HSEBYP:
+High-Speed External (HSE) oscillator bypass – When set, it bypasses the oscillator with an external clock.
+RCC_CR_HSEON:
+High-Speed External (HSE) oscillator enable – When set, it turns on the HSE oscillator.
+RCC_CR_HSERDY:
+High-Speed External (HSE) oscillator ready flag – When set, it indicates that the HSE oscillator is stable and ready to be used.</p>
+<p>Power Controller Configuration:</p>
+<dl class="simple">
+<dt>RCC_APB1ENR_PWREN:</dt><dd><p>Power interface clock enable – When set, it enables the clock for the power controller.</p>
+</dd>
+</dl>
+<p>Voltage Scaling:</p>
+<p>PWR_CR_VOS:
+Voltage scaling selection – When set to 1, it selects scale 1, which is used for maximum performance.</p>
+<p>Flash Memory Configuration:</p>
+<p>FLASH_ACR_LATENCY_3WS:
+Flash memory latency setting – When set, it configures the flash memory access time to 3 wait states.</p>
+<p>PLL (Phase-Locked Loop) Configuration:</p>
+<p>RCC_PLLCFGR_PLLM: – PLL division factor for the main PLL input clock.
+RCC_PLLCFGR_PLLN: – PLL multiplication factor for the main PLL.
+RCC_PLLCFGR_PLLP: – PLL division factor for the main system clock.</p>
+<p>APB1 Prescaler Configuration:</p>
+<p>RCC_CFGR_PPRE1: – APB1 low-speed prescaler. Configures the division factor of the APB1 clock.</p>
+<p>RCC_CFGR_PPRE1_DIV2: – APB1 prescaler value to divide by 2.</p>
+<p>Enabling the PLL:</p>
+<p>RCC_CFGR_SW_PLL: – System clock switch. Selects the PLL as the system clock source.</p>
+<p>Switching the System Clock:</p>
+<p>RCC_CFGR_SWS_PLL: – System clock switch status. Indicates that the PLL is used as the system clock.</p>
+<p>Updating SystemCoreClock:</p>
+<p>SystemCoreClockUpdate(): This function updates the SystemCoreClock variable, which holds the core clock frequency.
+This is necessary to keep track of the current system clock frequency after configuration changes.</p>
+<p>Effective clock initialization maximizes the microcontroller’s performance, ensures stable operation, and aligns the system’s functionality with the design requirements. Properly configured clocks enable efficient operation of both the core and peripheral components, leading to reliable and optimized system performance.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1_gpio_firmware.html" class="btn btn-neutral float-left" title="4.2.1. 3. Defining Initial Code for GPIO Firmware" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_usart.html" class="btn btn-neutral float-right" title="4.2.3. USART (Universal Synchronous/Asynchronous Receiver/Transmitter)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Maasu BH d.o.o..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
